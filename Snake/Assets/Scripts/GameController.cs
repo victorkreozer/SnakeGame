@@ -19,10 +19,11 @@ public class GameController : MonoBehaviour {
     public static void FailGame() {
         gameOverPanelStatic.SetActive(true);
         isPaused = true;
+        SceneManager.LoadScene("GameOverScene");
     }
 
     public static void RestartGame() {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene("Game");
     }
 
     public static void ExitGame() {

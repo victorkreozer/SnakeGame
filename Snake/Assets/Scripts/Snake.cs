@@ -10,13 +10,7 @@ public class Snake : MonoBehaviour {
     Vector2 direction = Vector2.right;
 
     // Speed
-    public float movementSpeed;
-
-    // Singleton 
-    static private Snake instance = null;
-    static public Snake getInstance() {
-        return Snake.instance;
-    }
+    //public float movementSpeed;
 
     // Keep Track of Tail
     List<Transform> tail = new List<Transform>();
@@ -29,8 +23,7 @@ public class Snake : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        Snake.instance = this;
-        InvokeRepeating("Move", 0.7f, 0.7f);
+        InvokeRepeating("Move", 0.2f, 0.2f);
     }
 
     // Update is called once per frame
@@ -44,38 +37,11 @@ public class Snake : MonoBehaviour {
             direction = Vector2.left; // '-right' means 'left'
         else if (Input.GetKey(KeyCode.UpArrow))
             direction = Vector2.up;
-
-        // Mouse / Tap Input
-        if (Input.GetMouseButtonDown(0)) {
-            Debug.Log("I clicked somewhere");
-            // get position of click
-            Vector2 clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Debug.Log(clickPosition);
-
-            // Check if you are going vertically or horizontally
-            // snake is going left or right
-            if (direction == Vector2.right || direction == Vector2.left) {
-                // click above the snake to go up
-                if (transform.position.y < clickPosition.y) {
-                    direction = Vector2.up;
-                } // click below the snake to go down
-                else {
-                    direction = Vector2.down;
-                }
-            } // snake is going up or down
-            else {
-                // click right the snake to go right
-                if (transform.position.x < clickPosition.x) {
-                    direction = Vector2.right;
-                } // click left of the snake to go left
-                else {
-                    direction = Vector2.left;
-                }
-            }
-        }
     }
 
     void Move() {
+        if(GameController.isPaused) return;
+
         // Save current position (gap will be here)
         Vector2 lastHeadPosition = transform.position;
 
@@ -115,9 +81,9 @@ public class Snake : MonoBehaviour {
             Destroy(collider.gameObject);
         }
         // Collided with Tail or Border
-        else {
+        else  if(collider.tag.Contains("Border")){
             // To Do "Your Lose" screen
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            GameController.FailGame();
         }
-    }
+	}
 }
